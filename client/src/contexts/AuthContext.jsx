@@ -9,39 +9,12 @@ export const AuthProvider = ({ children }) => {
     token: null
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    if (token) {
-      // Verify token and set state
-      const verifyToken = async () => {
-        try {
-          const response = await fetch('/.netlify/functions/api/admin/verify', {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          if (response.ok) {
-            const data = await response.json();
-            setAuthState({
-              isAuthenticated: true,
-              isSuperAdmin: data.isSuperAdmin,
-              token
-            });
-          } else {
-            localStorage.removeItem('adminToken');
-          }
-        } catch (error) {
-          localStorage.removeItem('adminToken');
-        }
-      };
-      verifyToken();
-    }
-  }, []);
-
   const logout = () => {
     localStorage.removeItem('adminToken');
     setAuthState({
-        isAuthenticated: false,
-        isSuperAdmin: false,
-        token: null
+      isAuthenticated: false,
+      isSuperAdmin: false,
+      token: null
     });
   };
 
