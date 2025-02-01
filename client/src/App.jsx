@@ -34,13 +34,13 @@ function App() {
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/blog" element={<Blog />} />
-                
-                {/* Admin Routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />
+
+                {/* Protected Admin Routes */}
                 <Route path="/admin/*" element={
                   <ProtectedRoute>
                     <Routes>
-                      <Route index element={<Dashboard />} />
+                      <Route path="dashboard" element={<Dashboard />} />
                       <Route path="blog" element={<BlogEditor />} />
                       <Route path="services" element={<ServiceEditor />} />
                       <Route path="portfolio" element={<PortfolioEditor />} />

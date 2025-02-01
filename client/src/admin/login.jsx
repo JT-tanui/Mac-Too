@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setAuthState } = useContext(AuthContext);
+
+  const API_URL = process.env.NODE_ENV === 'production' 
+    ? '/.netlify/functions/api'
+    : 'http://localhost:5000/api';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+
     try {
-      const response = await fetch('http://localhost:5000/api/admin/login', {
+      const response = await fetch(`${API_URL}/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -19,21 +29,28 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem('adminToken', data.token);
-        navigate('/admin');
+        setAuthState({ 
+          isAuthenticated: true,
+          isSuperAdmin: data.isSuperAdmin,
+          token: data.token 
+        });
+        navigate('/admin/dashboard');
       } else {
-        setError(data.message || 'Login failed');
+        setError(data.error || 'Login failed');
       }
-    } catch (error) {
-      setError('Server error');
+    } catch (err) {
+      setError('Network error occurred');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
@@ -44,6 +61,7 @@ const Login = () => {
             className="w-full mb-4 p-2 border rounded"
             value={credentials.username}
             onChange={(e) => setCredentials({...credentials, username: e.target.value})}
+            disabled={loading}
           />
           <input
             type="password"
@@ -51,12 +69,14 @@ const Login = () => {
             className="w-full mb-4 p-2 border rounded"
             value={credentials.password}
             onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+            disabled={loading}
           />
           <button 
             type="submit"
-            className="w-full bg-blue-600 text-white p-2 rounded"
+            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-50"
+            disabled={loading}
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
       </div>

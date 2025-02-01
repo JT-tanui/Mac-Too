@@ -1,30 +1,44 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [authState, setAuthState] = useState({
+    isAuthenticated: false,
+    isSuperAdmin: false,
+    token: null
+  });
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
-    setIsAuthenticated(!!token);
-    setLoading(false);
+    if (token) {
+      // Verify token and set state
+      const verifyToken = async () => {
+        try {
+          const response = await fetch('/.netlify/functions/api/admin/verify', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setAuthState({
+              isAuthenticated: true,
+              isSuperAdmin: data.isSuperAdmin,
+              token
+            });
+          } else {
+            localStorage.removeItem('adminToken');
+          }
+        } catch (error) {
+          localStorage.removeItem('adminToken');
+        }
+      };
+      verifyToken();
+    }
   }, []);
 
-  const login = (token) => {
-    localStorage.setItem('adminToken', token);
-    setIsAuthenticated(true);
-  };
-
-  const logout = () => {
-    localStorage.removeItem('adminToken');
-    setIsAuthenticated(false);
-  };
-
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, loading }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ authState, setAuthState }}>
+      {children}
     </AuthContext.Provider>
   );
 };
