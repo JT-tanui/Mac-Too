@@ -36,8 +36,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const logout = () => {
+    localStorage.removeItem('adminToken');
+    setAuthState({
+        isAuthenticated: false,
+        isSuperAdmin: false,
+        token: null
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ authState, setAuthState }}>
+    <AuthContext.Provider value={{ authState, setAuthState, logout }}>
       {children}
     </AuthContext.Provider>
   );

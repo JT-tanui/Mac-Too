@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { AuthContext } from './AuthContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { authState, logout } = useContext(AuthContext);
 
   const navItems = [
     { path: '/', label: 'Home' },
@@ -46,6 +48,14 @@ const Navbar = () => {
             >
               Get Started Today
             </Link>
+            {authState.isAuthenticated && (
+              <button 
+                  onClick={logout}
+                  className="text-white hover:text-gray-200"
+              >
+                  Logout
+              </button>
+            )}
           </div>
 
           {/* Mobile menu button */}
