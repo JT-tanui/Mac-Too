@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const AdminLogin = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -30,58 +30,38 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-        <div>
-          <h2 className="text-center text-3xl font-bold">Admin Login</h2>
-        </div>
+      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             {error}
           </div>
         )}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="username" className="sr-only">Username</label>
-            <input
-              id="username"
-              type="text"
-              required
-              className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300"
-              placeholder="Username"
-              value={credentials.username}
-              onChange={(e) => setCredentials({
-                ...credentials,
-                username: e.target.value
-              })}
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="sr-only">Password</label>
-            <input
-              id="password"
-              type="password"
-              required
-              className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300"
-              placeholder="Password"
-              value={credentials.password}
-              onChange={(e) => setCredentials({
-                ...credentials,
-                password: e.target.value
-              })}
-            />
-          </div>
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-            >
-              Sign in
-            </button>
-          </div>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full mb-4 p-2 border rounded"
+            value={credentials.username}
+            onChange={(e) => setCredentials({...credentials, username: e.target.value})}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full mb-4 p-2 border rounded"
+            value={credentials.password}
+            onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+          />
+          <button 
+            type="submit"
+            className="w-full bg-blue-600 text-white p-2 rounded"
+          >
+            Login
+          </button>
         </form>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default AdminLogin;
