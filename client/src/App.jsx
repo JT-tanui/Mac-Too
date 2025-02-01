@@ -10,10 +10,10 @@ import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import AdminLogin from './admin/login.jsx';  // lowercase login
 import AdminLogin from './admin/login.jsx';  // uppercase Login
-import Dashboard from './admin/Dashboard';
-import BlogEditor from './admin/BlogEditor';
-import ServiceEditor from './admin/ServiceEditor';
-import PortfolioEditor from './admin/PortfolioEditor';
+import Dashboard from './admin/Dashboard.jsx';
+import BlogEditor from './admin/BlogEditor.jsx';
+import ServiceEditor from './admin/ServiceEditor.jsx';
+import PortfolioEditor from './admin/PortfolioEditor.jsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
