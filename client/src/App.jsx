@@ -8,8 +8,7 @@ import Services from './pages/Services';
 import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
-import AdminLogin from './admin/login.jsx';  // lowercase login
-import AdminLogin from './admin/login.jsx';  // uppercase Login
+import AdminLogin from './admin/login.jsx';
 import Dashboard from './admin/Dashboard.jsx';
 import BlogEditor from './admin/BlogEditor.jsx';
 import ServiceEditor from './admin/ServiceEditor.jsx';
