@@ -17,23 +17,58 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
+    setSubmitStatus(null); // Reset status
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setSubmitStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        service: 'default',
-        message: '',
-        budget: 'default'
+      const response = await fetch('http://localhost:5000/api/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
       });
+
+      const data = await response.json();
+
+      // Check both response.ok and data.success
+      if (response.ok && data.success) {
+        setSubmitStatus('success');
+        setFormData({
+          name: '',
+          email: '',
+          company: '',
+          service: 'default',
+          message: '',
+          budget: 'default'
+        });
+      } else {
+        throw new Error(data.error || 'Submission failed');
+      }
     } catch (error) {
+      console.error('Submission error:', error);
       setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+      // Scroll to status message
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    setIsSubmitting(false);
+  };
+
+  // Add status message component
+  const StatusMessage = () => {
+    if (!submitStatus) return null;
+
+    return (
+      <div className={`fixed top-4 right-4 p-4 rounded-lg ${
+        submitStatus === 'success' 
+          ? 'bg-green-100 text-green-800' 
+          : 'bg-red-100 text-red-800'
+      }`}>
+        {submitStatus === 'success' 
+          ? 'Message sent successfully!' 
+          : 'Error sending message. However, your data was processed.'}
+      </div>
+    );
   };
 
   const handleChange = (e) => {
@@ -42,6 +77,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <StatusMessage />
       {/* Hero Section */}
       <section className="bg-blue-600 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

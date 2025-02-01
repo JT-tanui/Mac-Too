@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiClock, FiShare2, FiUser, FiTag, FiSearch } from 'react-icons/fi';
 
+const API_URL = 'http://localhost:5000/api';
+
 const Blog = () => {
   const [posts] = useState([
     {
@@ -41,6 +43,8 @@ const Blog = () => {
 
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [email, setEmail] = useState('');
+  const [subscribeStatus, setSubscribeStatus] = useState(null);
   const categories = ['All', 'Digital Marketing', 'Branding', 'Content', 'Strategy'];
 
   const filteredPosts = posts.filter(post => {
@@ -49,6 +53,28 @@ const Blog = () => {
                          post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_URL}/newsletter/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSubscribeStatus('success');
+        setEmail('');
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (error) {
+      setSubscribeStatus('error');
+      console.error('Newsletter subscription error:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -165,16 +191,20 @@ const Blog = () => {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
           <p className="text-gray-600 mb-8">Get the latest marketing insights delivered to your inbox</p>
-          <form className="flex flex-col sm:flex-row gap-4 justify-center">
+          <form className="flex flex-col sm:flex-row gap-4 justify-center" onSubmit={handleSubscribe}>
             <input
               type="email"
               placeholder="Enter your email"
               className="px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500 flex-grow max-w-md"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Subscribe
             </button>
           </form>
+          {subscribeStatus === 'success' && <p className="text-green-600 mt-4">Subscribed successfully!</p>}
+          {subscribeStatus === 'error' && <p className="text-red-600 mt-4">Subscription failed. Please try again.</p>}
         </div>
       </section>
     </div>

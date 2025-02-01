@@ -249,6 +249,101 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Statistics Section */}
+      <section className="py-20 bg-blue-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-white text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h3 className="text-4xl font-bold mb-2">200+</h3>
+              <p>Projects Completed</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <h3 className="text-4xl font-bold mb-2">50+</h3>
+              <p>Team Members</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <h3 className="text-4xl font-bold mb-2">95%</h3>
+              <p>Client Satisfaction</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <h3 className="text-4xl font-bold mb-2">10+</h3>
+              <p>Years Experience</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+          <div className="space-y-6">
+            {[
+              {
+                question: "What services do you offer?",
+                answer: "We offer comprehensive marketing solutions including branding, digital marketing, content creation, and strategic consulting."
+              },
+              {
+                question: "How long does a typical project take?",
+                answer: "Project timelines vary based on scope and complexity. A typical project can range from 4-12 weeks."
+              },
+              {
+                question: "What is your pricing structure?",
+                answer: "We offer customized pricing based on project requirements. Contact us for a detailed quote."
+              }
+            ].map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-white rounded-lg shadow-md p-6"
+              >
+                <h3 className="text-xl font-semibold mb-2">{faq.question}</h3>
+                <p className="text-gray-600">{faq.answer}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Business?</h2>
+            <p className="text-xl mb-8">Let's create something amazing together.</p>
+            <Link
+              to="/contact"
+              className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              Get Started Today
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
     </div>
   );
 };
