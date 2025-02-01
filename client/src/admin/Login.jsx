@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const AdminLogin = () => {
+const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -64,4 +64,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default Login;
