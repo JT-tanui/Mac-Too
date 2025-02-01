@@ -2,6 +2,7 @@
   command = "npm run build"
   publish = "dist"
   base = "/"
+  functions = "netlify/functions"
 
 [context.production]
   environment = { NODE_VERSION = "18" }
@@ -9,6 +10,11 @@
 [dev]
   command = "remix vite:dev"
   port = 3000
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
 
 [[redirects]]
   from = "/*"
