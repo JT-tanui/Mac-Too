@@ -7,11 +7,12 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setAuthState } = useContext(AuthContext);
+  const { setAuthState, login } = useContext(AuthContext);
 
+  // Define API URL based on environment
   const API_URL = process.env.NODE_ENV === 'production' 
     ? '/.netlify/functions/api'
-    : 'http://localhost:5000/api';
+    : 'http://localhost:5000/api'; // Add /api to match backend route
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,13 +28,8 @@ const Login = () => {
 
       const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem('adminToken', data.token);
-        setAuthState({ 
-          isAuthenticated: true,
-          isSuperAdmin: data.isSuperAdmin,
-          token: data.token 
-        });
+      if (response.ok && data.token) {
+        login(data.token, data.isSuperAdmin); // Use login function from context
         navigate('/admin/dashboard');
       } else {
         setError(data.error || 'Login failed');

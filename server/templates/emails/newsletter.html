@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="supported-color-schemes" content="light">
+    <title>{{subject}}</title>
+    <style>
+        :root {
+            color-scheme: light;
+        }
+        /* Resets */
+        body { margin: 0; padding: 0; min-width: 100%; width: 100% !important; height: 100% !important; }
+        img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        
+        /* Base styles */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        
+        /* Responsive styles */
+        @media screen and (max-width: 600px) {
+            .container { width: 100% !important; }
+            .content { padding: 10px !important; }
+            .header { padding: 20px 10px !important; }
+        }
+    </style>
+</head>
+<body style="background-color: #f6f9fc; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+        <tr>
+            <td align="center" style="padding: 20px 0;">
+                <table class="container" border="0" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;background-color:#ffffff;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td class="header" style="padding:40px;text-align:center;background-color:#1a56db;border-radius:8px 8px 0 0;">
+                            <img src="{{logoUrl}}" alt="Company Logo" style="max-width:200px;height:auto;">
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td class="content" style="padding:40px;">
+                            {{{content}}}
+                        </td>
+                    </tr>
+                    
+                    <!-- Social Links -->
+                    <tr>
+                        <td style="padding:20px;text-align:center;background-color:#f8fafc;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;">
+                                <tr>
+                                    <td style="padding:0 10px;">
+                                        <a href="{{socialLinks.facebook}}" style="text-decoration:none;">
+                                            <img src="{{baseUrl}}/images/facebook.png" alt="Facebook" width="24">
+                                        </a>
+                                    </td>
+                                    <td style="padding:0 10px;">
+                                        <a href="{{socialLinks.twitter}}" style="text-decoration:none;">
+                                            <img src="{{baseUrl}}/images/twitter.png" alt="Twitter" width="24">
+                                        </a>
+                                    </td>
+                                    <td style="padding:0 10px;">
+                                        <a href="{{socialLinks.linkedin}}" style="text-decoration:none;">
+                                            <img src="{{baseUrl}}/images/linkedin.png" alt="LinkedIn" width="24">
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding:20px 40px;text-align:center;color:#64748b;font-size:14px;border-top:1px solid #e2e8f0;">
+                            <p style="margin:0 0 10px;">© {{year}} Your Company. All rights reserved.</p>
+                            <p style="margin:0;">
+                                <a href="{{unsubscribeUrl}}" style="color:#1a56db;text-decoration:none;">Unsubscribe</a>
+                                •
+                                <a href="{{preferencesUrl}}" style="color:#1a56db;text-decoration:none;">Email Preferences</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <!-- Tracking Pixel -->
+                <img src="{{trackingPixel}}" alt="" width="1" height="1" border="0" style="height:1px!important;width:1px!important;border-width:0!important;margin-top:0!important;margin-bottom:0!important;margin-right:0!important;margin-left:0!important;padding-top:0!important;padding-bottom:0!important;padding-right:0!important;padding-left:0!important;">
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -98,13 +98,13 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-2">
               <li className="text-gray-400">
-                123 Marketing Street
+                30100, Eldoret-nakuru highway
                 <br />
-                New York, NY 10001
+                Eldoret City, ELD 30100
               </li>
               <li>
-                <a href="tel:+1234567890" className="text-gray-400 hover:text-white">
-                  (123) 456-7890
+                <a href="tel:+254722803403" className="text-gray-400 hover:text-white">
+                  +254 722 803 403
                 </a>
               </li>
               <li>

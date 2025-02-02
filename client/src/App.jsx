@@ -9,14 +9,22 @@ import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import AdminLogin from './admin/login.jsx';
-import Dashboard from './admin/Dashboard.jsx';
+import Dashboard from './admin/Dashboard';
 import BlogEditor from './admin/BlogEditor.jsx';
-import ServiceEditor from './admin/ServiceEditor.jsx';
+import ServiceEditor from './admin/ServiceEditor';
 import PortfolioEditor from './admin/PortfolioEditor.jsx';
+import TeamManager from './admin/TeamManager';
+import Settings from './admin/Settings';
+import NewsletterManager from './admin/NewsletterManager';
+import ContactMessages from './admin/ContactMessages';
+import TestimonialsManager from './admin/TestimonialsManager';
+import ImageGallery from './admin/ImageGallery';
+import ActivityLog from './admin/ActivityLog';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSpinner from './components/LoadingSpinner';
+import AdminLayout from './components/AdminLayout';
 
 function App() {
   return (
@@ -37,16 +45,17 @@ function App() {
                 <Route path="/admin/login" element={<AdminLogin />} />
 
                 {/* Protected Admin Routes */}
-                <Route path="/admin/*" element={
-                  <ProtectedRoute>
-                    <Routes>
-                      <Route path="dashboard" element={<Dashboard />} />
-                      <Route path="blog" element={<BlogEditor />} />
-                      <Route path="services" element={<ServiceEditor />} />
-                      <Route path="portfolio" element={<PortfolioEditor />} />
-                    </Routes>
-                  </ProtectedRoute>
-                } />
+                <Route path="/admin/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>} />
+                <Route path="/admin/blog" element={<AdminLayout><BlogEditor /></AdminLayout>} />
+                <Route path="/admin/services" element={<AdminLayout><ServiceEditor /></AdminLayout>} />
+                <Route path="/admin/portfolio" element={<AdminLayout><PortfolioEditor /></AdminLayout>} />
+                <Route path="/admin/team" element={<AdminLayout><TeamManager /></AdminLayout>} />
+                <Route path="/admin/settings" element={<AdminLayout><Settings /></AdminLayout>} />
+                <Route path="/admin/newsletter" element={<AdminLayout><NewsletterManager /></AdminLayout>} />
+                <Route path="/admin/messages" element={<AdminLayout><ContactMessages /></AdminLayout>} />
+                <Route path="/admin/testimonials" element={<AdminLayout><TestimonialsManager /></AdminLayout>} />
+                <Route path="/admin/gallery" element={<AdminLayout><ImageGallery /></AdminLayout>} />
+                <Route path="/admin/activity" element={<AdminLayout><ActivityLog /></AdminLayout>} />
                 
                 {/* 404 Route */}
                 <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS settings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    key TEXT UNIQUE NOT NULL,
+    value TEXT NOT NULL,
+    category TEXT NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_by INTEGER,
+    FOREIGN KEY(updated_by) REFERENCES team_members(id)
+);
+
+CREATE TABLE IF NOT EXISTS email_templates (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    subject TEXT NOT NULL,
+    body TEXT NOT NULL,
+    variables TEXT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

@@ -5,14 +5,18 @@ const jwt = require('jsonwebtoken');
 const { dbPromise } = require('../config/database');
 const adminAuth = require('../middleware/adminAuth');
 const superAdminAuth = require('../middleware/superAdminAuth');
+const authMiddleware = require('../middleware/auth');
+
+// Apply auth middleware to all routes
+router.use(authMiddleware);
 
 // Login route (no auth required)
 router.post('/login', async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { email, password } = req.body;
         const db = await dbPromise;
         
-        const user = await db.get('SELECT * FROM admin_users WHERE username = ?', [username]);
+        const user = await db.get('SELECT * FROM team_members WHERE email = ?', [email]);
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -22,15 +26,31 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
+        // Update last login
+        await db.run(
+            'UPDATE team_members SET last_login = CURRENT_TIMESTAMP WHERE id = ?',
+            [user.id]
+        );
+
+        // Create token
         const token = jwt.sign(
-            { id: user.id, isSuperAdmin: user.is_super_admin },
+            { id: user.id, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 
-        res.json({ token, isSuperAdmin: user.is_super_admin });
+        res.json({
+            token,
+            user: {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+                username: user.username
+            }
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Login failed' });
     }
 });
 
@@ -80,13 +100,35 @@ router.delete('/users/:id', superAdminAuth, async (req, res) => {
 
 router.use(adminAuth);
 
+router.get('/verify', adminAuth, async (req, res) => {
+    try {
+        const db = await dbPromise;
+        const user = await db.get(
+            'SELECT is_super_admin FROM admin_users WHERE id = ?', 
+            [req.userData.id]
+        );
+        res.json({ 
+            isValid: true, 
+            isSuperAdmin: user.is_super_admin 
+        });
+    } catch (error) {
+        res.status(401).json({ error: 'Invalid token' });
+    }
+});
+
 // Blog CRUD
 router.get('/blog', async (req, res) => {
     try {
         const db = await dbPromise;
-        const posts = await db.all('SELECT * FROM blog_posts ORDER BY created_at DESC');
+        const posts = await db.all(`
+            SELECT id, title, content, category, image_url as imageUrl, 
+                   visible, created_at, updated_at
+            FROM blog_posts
+            ORDER BY created_at DESC
+        `);
         res.json(posts);
     } catch (error) {
+        console.error('Database error:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -94,27 +136,34 @@ router.get('/blog', async (req, res) => {
 router.post('/blog', async (req, res) => {
     try {
         const db = await dbPromise;
-        const { title, content, category, imageUrl } = req.body;
-        const result = await db.run(
-            'INSERT INTO blog_posts (title, content, category, image_url) VALUES (?, ?, ?, ?)',
-            [title, content, category, imageUrl]
-        );
-        res.json({ id: result.lastID });
+        const { title, content, category, imageUrl, visible } = req.body;
+        
+        const result = await db.run(`
+            INSERT INTO blog_posts (title, content, category, image_url, visible)
+            VALUES (?, ?, ?, ?, ?)
+        `, [title, content, category, imageUrl, visible]);
+        
+        const post = await db.get('SELECT * FROM blog_posts WHERE id = ?', result.lastID);
+        res.status(201).json(post);
     } catch (error) {
+        console.error('Database error:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
-router.put('/blog/:id', async (req, res) => {
+router.patch('/blog/:id/visibility', async (req, res) => {
     try {
         const db = await dbPromise;
-        const { title, content, category, imageUrl } = req.body;
+        const { visible } = req.body;
+        
         await db.run(
-            'UPDATE blog_posts SET title = ?, content = ?, category = ?, image_url = ? WHERE id = ?',
-            [title, content, category, imageUrl, req.params.id]
+            'UPDATE blog_posts SET visible = ? WHERE id = ?',
+            [visible, req.params.id]
         );
+        
         res.json({ success: true });
     } catch (error) {
+        console.error('Database error:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -122,9 +171,10 @@ router.put('/blog/:id', async (req, res) => {
 router.delete('/blog/:id', async (req, res) => {
     try {
         const db = await dbPromise;
-        await db.run('DELETE FROM blog_posts WHERE id = ?', [req.params.id]);
+        await db.run('DELETE FROM blog_posts WHERE id = ?', req.params.id);
         res.json({ success: true });
     } catch (error) {
+        console.error('Database error:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -222,6 +272,41 @@ router.delete('/portfolio/:id', async (req, res) => {
         const db = await dbPromise;
         await db.run('DELETE FROM portfolio WHERE id = ?', [req.params.id]);
         res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Stats route
+router.get('/stats', adminAuth, async (req, res) => {
+    try {
+        const stats = {
+            totalContacts: 0,
+            totalPosts: 0,
+            totalServices: 0,
+            totalProjects: 0
+        };
+        res.json(stats);
+    } catch (error) {
+        console.error('Stats error:', error);
+        res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+});
+
+// Add batch processing endpoint
+router.post('/process-contacts', async (req, res) => {
+    try {
+        const result = await batchProcessor.processContacts();
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post('/cleanup-temp', async (req, res) => {
+    try {
+        await batchProcessor.cleanup();
+        res.json({ message: 'Cleanup completed' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

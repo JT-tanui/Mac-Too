@@ -9,7 +9,8 @@ router.get('/', async (req, res) => {
         const posts = await db.all('SELECT * FROM blog_posts ORDER BY created_at DESC');
         res.json(posts);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch blog posts' });
+        console.error('Error fetching posts:', error);
+        res.status(500).json({ error: error.message });
     }
 });
 
@@ -28,25 +29,22 @@ router.get('/:id', async (req, res) => {
 // Create blog post
 router.post('/', async (req, res) => {
     try {
-        const { title, content, category, imageUrl } = req.body;
+        const db = await dbPromise;
+        const { title, content, category, imageUrl, visible } = req.body;
         
         // Validate required fields
         if (!title || !content) {
             return res.status(400).json({ error: 'Title and content are required' });
         }
 
-        const db = await dbPromise;
         const result = await db.run(
-            'INSERT INTO blog_posts (title, content, category, image_url) VALUES (?, ?, ?, ?)',
-            [title, content, category, imageUrl]
+            'INSERT INTO blog_posts (title, content, category, image_url, visible) VALUES (?, ?, ?, ?, ?)',
+            [title, content, category, imageUrl, visible]
         );
-
-        res.status(201).json({ 
-            id: result.lastID,
-            message: 'Blog post created successfully' 
-        });
+        const post = await db.get('SELECT * FROM blog_posts WHERE id = ?', result.lastID);
+        res.status(201).json(post);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create blog post' });
+        res.status(500).json({ error: error.message });
     }
 });
 

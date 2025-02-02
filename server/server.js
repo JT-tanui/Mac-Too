@@ -1,54 +1,53 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const { initializeDatabase } = require('./db/migrations');
-const { dbPromise } = require('./config/database');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { dbPromise } from './config/database.js';
+import { initializeDatabase } from './db/migrations/index.js';
 
-const authMiddleware = require('./middleware/auth');
-const errorHandler = require('./middleware/errorHandler');
-const { contactValidation } = require('./middleware/validation');
-const upload = require('./services/fileUpload');
+import authMiddleware from './middleware/auth.js';
+import errorHandler from './middleware/errorHandler.js';
+import { contactValidation } from './middleware/validation.js';
+import upload from './services/fileUpload.js';
+import adminRoutes from './routes/admin.js';
+import settingsRoutes from './routes/settings.js';
+import imageRoutes from './routes/images.js';
+import testimonialRoutes from './routes/testimonials.js';
+import contactRoutes from './routes/contacts.js';
+import teamRoutes from './routes/team.js';
+import apiRoutes from './routes/api.js';
+import activityLogger from './middleware/activityLogger.js';
+import { validateService, validateBlogPost, validateTestimonial, handleValidation } from './middleware/validation.js';
+import newsletterRoutes from './routes/newsletter.js';
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}));
+// CORS and middleware
+app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
+app.use(express.urlencoded({ extended: true }));
 
-// Initialize database and tables
-initializeDatabase()
-    .then(() => {
-        console.log('Database and tables initialized');
-        return dbPromise;
-    })
-    .then(db => {
-        console.log('Database connected successfully');
-    })
-    .catch(err => {
-        console.error('Database initialization failed:', err);
-    });
+// Initialize database
+await initializeDatabase();
 
-// Routes with middleware
-app.use('/api/contacts', contactValidation, require('./routes/contacts'));
-app.use('/api/services', authMiddleware, require('./routes/services'));
-app.use('/api/projects', authMiddleware, require('./routes/projects'));
-app.use('/api/newsletter', require('./routes/newsletter'));
+// Routes
+app.use('/api/admin/testimonials', authMiddleware, testimonialRoutes);
+app.use('/api/admin/contacts', authMiddleware, contactRoutes);
+app.use('/api/admin/team', authMiddleware, teamRoutes);
 
-// File upload route
-app.post('/api/upload', authMiddleware, upload.single('file'), (req, res) => {
-  res.json({ file: req.file });
-});
-
+// Error handling
 app.use(errorHandler);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
-});
-
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+}).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.log(`Port ${PORT} is busy, trying ${PORT + 1}`);
+        app.listen(PORT + 1);
+    }
+});

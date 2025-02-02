@@ -148,7 +148,7 @@ const Contact = () => {
                     >
                       <option value="default" disabled>Select a service</option>
                       <option value="branding">Branding</option>
-                      <option value="digital-marketing">Digital Marketing</option>
+                      <option value="digital-marketing">General Marketing</option>
                       <option value="content-creation">Content Creation</option>
                       <option value="web-development">Web Development</option>
                     </select>
@@ -162,10 +162,10 @@ const Contact = () => {
                       className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="default" disabled>Select budget range</option>
-                      <option value="5k-10k">$5,000 - $10,000</option>
-                      <option value="10k-25k">$10,000 - $25,000</option>
-                      <option value="25k-50k">$25,000 - $50,000</option>
-                      <option value="50k+">$50,000+</option>
+                      <option value="5k-10k">ksh 50,000  - ksh 150,000</option>
+                      <option value="10k-25k">ksh 100,000 - ksh 275,000</option>
+                      <option value="25k-50k">ksh 275,000 - ksh 400,000</option>
+                      <option value="50k+">ksh 400,000+</option>
                     </select>
                   </div>
                   <div>
@@ -212,28 +212,28 @@ const Contact = () => {
                     <FiMapPin className="text-blue-600 text-xl mt-1" />
                     <div>
                       <h3 className="font-medium">Office Location</h3>
-                      <p className="text-gray-600">123 Marketing Street<br />New York, NY 10001</p>
+                      <p className="text-gray-600">30100 Eldoret-Nakuru highway<br />Eldoret City, ELD 30100</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
                     <FiPhone className="text-blue-600 text-xl mt-1" />
                     <div>
                       <h3 className="font-medium">Phone</h3>
-                      <p className="text-gray-600">+1 (555) 123-4567</p>
+                      <p className="text-gray-600">+2547-2280-3403</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
                     <FiMail className="text-blue-600 text-xl mt-1" />
                     <div>
                       <h3 className="font-medium">Email</h3>
-                      <p className="text-gray-600">hello@macandtoo.com</p>
+                      <p className="text-gray-600">Inquiry@macandtoo.com</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
                     <FiClock className="text-blue-600 text-xl mt-1" />
                     <div>
                       <h3 className="font-medium">Business Hours</h3>
-                      <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM<br />Weekend: Closed</p>
+                      <p className="text-gray-600">Monday - Friday: 9:00 AM - 4:00 PM<br />Weekend: Closed</p>
                     </div>
                   </div>
                 </div>
